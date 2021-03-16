@@ -4,6 +4,11 @@ const PORT = 8080;
 
 app.set("view engine", "ejs");
 
+const generateRandomString = function() {
+  let randoStr = Math.random().toString(36).substring(2, 8);
+  return randoStr;
+};
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -45,3 +50,5 @@ app.post("/urls", (req, res) => {
   console.log(req.body);
   res.send("Ok");
 });
+
+
