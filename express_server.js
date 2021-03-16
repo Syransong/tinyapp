@@ -52,7 +52,7 @@ app.post("/urls", (req, res, next) => {
   res.statusCode = 200;
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
-  next();
+  res.redirect(`/urls/${shortURL}`);
 });
 
 
