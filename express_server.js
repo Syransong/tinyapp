@@ -9,11 +9,21 @@ app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
+//Global helper functions
 const generateRandomString = function() {
   let randoStr = Math.random().toString(36).substring(2, 8);
   return randoStr;
 };
 
+const doesEmailExist = function(email) {
+  for (const user in users) {
+    if (users[user.email] === email) {
+      return true;
+    }
+  }
+};
+
+//Global Objects
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -31,6 +41,8 @@ const users = {
     password: "M3t4Kn1nght5uck5!"
   }
 }
+
+// Routes
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -126,6 +138,10 @@ app.post("/register", (req, res) => {
     res.statusCode = 400;
     res.send( "Please enter your email and/or password");
     console.log("empty user or pw was entered");
+  }
+
+  for (let user in users) {
+
   }
   users[userID]= {
     id: userID,
