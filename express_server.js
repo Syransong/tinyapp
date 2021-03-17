@@ -112,4 +112,15 @@ app.post("/logout", (req, res) => {
 
 app.get("/register", (req, res) => {
   res.render("register");
-})
+});
+
+app.post("/register", (req, res) => {
+  // generate random userID
+  const userID = generateRandomString();
+  // add new user to global user object 
+
+  // set a user_id cookie containing the user's new ID 
+  res.cookie("user", userID);
+  //redirect to the /urls page 
+  res.redirect("/urls");
+});
