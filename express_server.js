@@ -87,11 +87,8 @@ app.post("/urls/:shortURL/update", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log("line 80", req.body);
-  // const username = req.body.username;
-
   res.cookie("username", req.body.username);
-  // res.send("ok");
+  
   res.redirect("/urls");
 });
 
