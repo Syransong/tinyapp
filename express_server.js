@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 const PORT = 8080;
+const cookieParser = require("cookie-parser");
 
+app.use(cookieParser());
 app.set("view engine", "ejs");
 
 const generateRandomString = function() {
@@ -72,4 +74,11 @@ app.post("/urls/:shortURL/update", (req, res) => {
   shortURL = newURL;
 
   res.redirect(`/urls/${shortURL}`)
+});
+
+app.post("/urls/login", (req, res) => {
+  const username = req.body.username;
+
+  res.cookie("username", username);
+  res.redirect("/urls");
 });
