@@ -122,6 +122,11 @@ app.post("/register", (req, res) => {
   const submittedPW = req.body.password;
   const userID = generateRandomString();
 
+  if (submittedEmail === "" || submittedPW === "") {
+    res.statusCode = 400;
+    res.send( "Please enter your email and/or password");
+    console.log("empty user or pw was entered");
+  }
   users[userID]= {
     id: userID,
     email: submittedEmail,
