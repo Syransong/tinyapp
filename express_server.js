@@ -1,7 +1,11 @@
 const express = require("express");
 const app = express();
 const PORT = 8080;
-const cookieParser = require("cookie-parser")
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
@@ -14,9 +18,6 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -73,4 +74,11 @@ app.post("/urls/:shortURL/update", (req, res) => {
   shortURL = newURL;
 
   res.redirect(`/urls/${shortURL}`)
+});
+
+app.post("/urls/login", (req, res) => {
+  const username = req.body.username;
+
+  res.cookie("username", username);
+  res.redirect("/urls");
 });
