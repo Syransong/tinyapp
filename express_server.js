@@ -115,12 +115,20 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+  const submittedEmail = req.body.email;
+  const submittedPW = req.body.password;
   // generate random userID
   const userID = generateRandomString();
   // add new user to global user object 
-
+  users[userID]= {
+    id: userID,
+    email: submittedEmail,
+    password: submittedPW
+  }
   // set a user_id cookie containing the user's new ID 
   res.cookie("user", userID);
+  //log to confirm that the users obj has successfully been appended
+  console.log("Here are the current users", users);
   //redirect to the /urls page 
   res.redirect("/urls");
 });
