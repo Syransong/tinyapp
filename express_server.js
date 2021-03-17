@@ -19,6 +19,18 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+  "coolGuy88": {
+    id: "coolGuy88",
+    email: "coolerthancool@cool.com", 
+    password: "C00l3stP455w0rd3v3r!"
+  }, 
+  "kirby": {
+    id: "pinkykirby", 
+    email: "kirbykurbs@dreamland.com", 
+    password: "M3t4Kn1nght5uck5!"
+  }
+}
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
