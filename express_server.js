@@ -114,9 +114,23 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.cookie("user_id", req.body.username);
+  const submittedEmail = req.body.email;
   
-  res.redirect("/urls");
+  if (!findUser(submittedEmail)) {
+    res.statusCode = 403;
+    res.send("Sorry, that email does not have an associated account on TinyApp. Please try again.")
+  } else if (findUser(submittedEmail)) { 
+    const submittedPW = req.body.password;
+    
+    if (!(submittedPW === findUser(submittedEmail).password)) {
+      res.statusCode = 403;
+      res.send("Sorry, the password inputted is incorrect. Please try again.")
+    } else {
+      const userID = findUser(submittedEmail).id;
+      res.cookie("user_id", userID);
+      res.redirect("/urls");
+    }
+  }
 });
 
 app.post("/logout", (req, res) => {
