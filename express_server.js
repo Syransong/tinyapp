@@ -109,6 +109,10 @@ app.post("/urls/:shortURL/update", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
 app.post("/login", (req, res) => {
   res.cookie("user_id", req.body.username);
   
@@ -155,3 +159,4 @@ app.post("/register", (req, res) => {
     res.redirect("/urls");
   }
 });
+
