@@ -13,6 +13,13 @@
 <body>
   <%- include('partials/_header') %>
   <main style="margin: 1em;">
+    <% if (!user) { %> 
+      <h1> Hello! You've arrived at TinyApp!</h1>
+      <h4> The BEST URL shortening service!</h4>
+      <form method="GET" action="/register">
+        <button type="submit" class="btn btn-primary"> Make my FREE account!</button>
+      </form>
+    <% } else { %> 
     <h3>My URLs</h3>
     <a href='/urls/new'> Shorten New URL</a>
     <table class="table">
@@ -43,6 +50,7 @@
         <% } %>
       </tbody>
     </table>
+    <% } %>
   </main>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
