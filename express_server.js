@@ -28,7 +28,7 @@ const users = {
     password: "C00l3stP455w0rd3v3r!"
   },
   "kirby": {
-    id: "pinkykirby",
+    id: "kirby",
     email: "kirbykurbs@dreamland.com",
     password: "M3t4Kn1nght5uck5!"
   }
@@ -90,7 +90,7 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {
     shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL],
+    longURL: urlDatabase[req.params.shortURL].longURL,
     user: users[req.cookies["user_id"]]
   };
   res.render("urls_show", templateVars);
