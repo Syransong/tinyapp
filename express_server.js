@@ -101,14 +101,20 @@ app.get("/urls/new", (req, res) => {
   }
 });
 
-// Shows short URL
+// Gets the short URL
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = {
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL].longURL,
-    user: users[req.cookies["user_id"]]
+  const enteredShortURL = req.params.shortURL;
+  console.log(enteredShortURL);
+  const loggedUser = req.cookies["user_id"]; 
+
+  if (urlDatabase[enteredShortURL].userID === loggedUser) {
+    let templateVars = {
+      shortURL: enteredShortURL,
+      longURL: urlDatabase[enteredShortURL].longURL,
+      user: users[loggedUser]
+    }
+    res.render("urls_show", templateVars);
   };
-  res.render("urls_show", templateVars);
 });
 
 // Creating new short URL
@@ -132,22 +138,25 @@ app.get("/u/:shortURL", (req, res) => {
 
 // Deletes short URL
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  
-  res.redirect("/urls");
+  const shortURL = req.params.shortURL;
+  const userID = req.cookies["user_id"];
+  const urlsOfUser = urlsForUser(userID);
+
+  if (Object.keys(urlsOfUser).includes(shortURL)) {
+    delete urlDatabase[shortURL];
+    res.redirect("/urls");
+  }
 });
 
 // Updates the shortURL
 app.post("/urls/:shortURL/update", (req, res) => {
-  const loggedUser = req.cookies["user_id"];
-  const shortURL = urlDatabase[req.body.shortURL];
+  // const loggedUser = req.cookies["user_id"]; 
+  let shortURL = urlDatabase[req.body.shortURL];
   const newURL = req.body.newURL;
   
-  if (urlDatabase[shortURL].userID === loggedUser) {
+  // if (urlDatabase[shortURL].userID === loggedUser) {
     shortURL = newURL;
 
-  }
-  
   res.redirect(`/urls/${shortURL}`);
 });
 
