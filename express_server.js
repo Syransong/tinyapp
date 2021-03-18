@@ -96,10 +96,15 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.post("/urls", (req, res, next) => {
+app.post("/urls", (req, res) => {
   res.statusCode = 200;
   let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
+  const userID = req.cookies["user_id"];
+
+  urlDatabase[shortURL] = {
+    longURL: req.body.longURL,
+    userID: userID
+  }
   res.redirect(`/urls/${shortURL}`);
 });
 
