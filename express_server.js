@@ -153,12 +153,10 @@ app.post("/register", (req, res) => {
   if (!submittedEmail || !submittedPW) {
     res.statusCode = 400;
     res.send("Please enter your email and/or password");
-    console.log("no username or PW", users);
 
   } else if (findUser(submittedEmail)) {
     res.statusCode = 400;
     res.send("Submitted email already in use.");
-    console.log("email already exists", users);
 
   } else {
     const userID = generateRandomString();
@@ -169,7 +167,6 @@ app.post("/register", (req, res) => {
       password: submittedPW
     };
     res.cookie("user_id", userID);
-    console.log(users);
     res.redirect("/urls");
   }
 });
