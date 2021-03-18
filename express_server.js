@@ -48,6 +48,17 @@ const findUser = function(email) {
   }
 };
 
+const usersURLs = function(urlDatabase, user) {
+  const urls = {} ;
+
+  for (let key in urlDatabase) {
+    if (user[key].userID === user) {
+      urls[key] = urlDatabase[key].longURL;
+    }
+  }
+  return urls;
+}
+
 // Routes
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -66,6 +77,8 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const userID = req.cookies["user_id"];
+
   const templateVars = {
     urls: urlDatabase,
     user: users[req.cookies["user_id"]]
