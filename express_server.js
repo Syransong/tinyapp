@@ -48,7 +48,7 @@ const findUser = function(email) {
   }
 };
 
-const usersURLs = function(user) {
+const urlsForUser = function(user) {
   let urls = {} ;
 
   for (let key in urlDatabase) {
@@ -79,7 +79,7 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const userID = req.cookies["user_id"];
-  const urlsOfUser = usersURLs(userID);
+  const urlsOfUser = urlsForUser(userID);
 
   const templateVars = {
     urls: urlsOfUser,
