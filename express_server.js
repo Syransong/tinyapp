@@ -9,20 +9,6 @@ app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
-//Global helper functions
-const generateRandomString = function() {
-  let randoStr = Math.random().toString(36).substring(2, 8);
-  return randoStr;
-};
-
-const doesEmailExist = function(email) {
-  for (const user in users) {
-    if (users[user.email] === email) {
-      return true;
-    }
-  }
-};
-
 //Global Objects
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -41,6 +27,20 @@ const users = {
     password: "M3t4Kn1nght5uck5!"
   }
 }
+
+//Global helper functions
+const generateRandomString = function() {
+  let randoStr = Math.random().toString(36).substring(2, 8);
+  return randoStr;
+};
+
+const findUser = function(email) {
+  for (const userid in users) {
+    if (users[userid].email === email) {
+      return users[userid];
+    }
+  }
+};
 
 // Routes
 app.get("/", (req, res) => {
@@ -132,24 +132,27 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const submittedEmail = req.body.email;
   const submittedPW = req.body.password;
-  const userID = generateRandomString();
-
-  if (submittedEmail === "" || submittedPW === "") {
+  
+  if (!submittedEmail || !submittedPW) {
     res.statusCode = 400;
     res.send( "Please enter your email and/or password");
-    console.log("empty user or pw was entered");
-  }
+    console.log("no username or PW", users);
 
-  for (let user in users) {
+  } else if (findUser(submittedEmail)) {
+    res.statusCode = 400;
+    res.send("Submitted email already in use.");
+    console.log("email already exists", users);
 
+  } else {
+    const userID = generateRandomString();
+
+    users[userID]= {
+      id: userID,
+      email: submittedEmail,
+      password: submittedPW
+    }
+    res.cookie("user_id", userID);
+    console.log(users);
+    res.redirect("/urls");
   }
-  users[userID]= {
-    id: userID,
-    email: submittedEmail,
-    password: submittedPW
-  }
-  
-  res.cookie("user_id", userID);
-  
-  res.redirect("/urls");
 });
