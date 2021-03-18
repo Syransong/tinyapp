@@ -133,16 +133,21 @@ app.get("/u/:shortURL", (req, res) => {
 // Deletes short URL
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
+  
   res.redirect("/urls");
 });
 
 // Updates the shortURL
 app.post("/urls/:shortURL/update", (req, res) => {
-  let shortURL = urlDatabase[req.body.shortURL];
+  const loggedUser = req.cookies["user_id"];
+  const shortURL = urlDatabase[req.body.shortURL];
   const newURL = req.body.newURL;
   
-  shortURL = newURL;
+  if (urlDatabase[shortURL].userID === loggedUser) {
+    shortURL = newURL;
 
+  }
+  
   res.redirect(`/urls/${shortURL}`);
 });
 
