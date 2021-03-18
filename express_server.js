@@ -48,14 +48,15 @@ const findUser = function(email) {
   }
 };
 
-const usersURLs = function(urlDatabase, user) {
-  const urls = {} ;
+const usersURLs = function(user) {
+  let urls = {} ;
 
   for (let key in urlDatabase) {
-    if (user[key].userID === user) {
+    if (urlDatabase[key].userID === user) {
       urls[key] = urlDatabase[key].longURL;
     }
   }
+  console.log("printing urls", urls);
   return urls;
 }
 
@@ -78,11 +79,13 @@ app.get("/hello", (req, res) => {
 
 app.get("/urls", (req, res) => {
   const userID = req.cookies["user_id"];
+  const urlsOfUser = usersURLs(userID);
 
   const templateVars = {
-    urls: urlDatabase,
-    user: users[req.cookies["user_id"]]
+    urls: urlsOfUser,
+    user: users[userID]
   };
+  console.log("urls of user", urlsOfUser);
   res.render("urls_index", templateVars);
 });
 
