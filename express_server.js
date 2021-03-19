@@ -209,7 +209,7 @@ app.post("/login", (req, res) => {
 
 // User Logout
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  req.session= null;
 
   res.redirect("/urls");
 });
