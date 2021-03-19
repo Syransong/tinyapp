@@ -33,12 +33,17 @@ const users = {
   "coolGuy88": {
     id: "coolGuy88",
     email: "coolerthancool@cool.com",
-    password: "C00l3stP455w0rd3v3r!"
+    password: "$2b$10$4X43WoUqK5PGAEJwfEf6QOugrus/uklO2ET6/09MzokWDIUE8ISh2" // plain-text cool"
   },
   "kirby": {
     id: "kirby",
     email: "kirbykurbs@dreamland.com",
-    password: "M3t4Kn1nght5uck5!"
+    password: "$2b$10$3NK2T99C0zJFHVuDrLtgeO.5fyVWjkb1HGvhSHRBbZ9hJ/UvYVgDK" //"kirby"
+  },
+  "m72z90": {
+    id: "m72z90", 
+    email: "b@b.com",
+    password: "$2b$10$nc63emRo/f/3HZ/ArNBe5.b2OkodIsgoLhxhgbka8I.on78/lxC12" //plain-text PW: 12345
   }
 };
 
@@ -64,7 +69,6 @@ const urlsForUser = function(user) {
       urls[key] = urlDatabase[key].longURL;
     }
   }
-  console.log("printing urls", urls);
   return urls;
 }
 
@@ -78,12 +82,12 @@ app.get("/urls.json", (req, res) => {
 app.get("/urls", (req, res) => {
   const userID = req.cookies["user_id"];
   const urlsOfUser = urlsForUser(userID);
-
+  
   const templateVars = {
     urls: urlsOfUser,
     user: users[userID]
   };
-  console.log("urls of user", urlsOfUser);
+
   res.render("urls_index", templateVars);
 });
 
@@ -108,7 +112,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const loggedUser = req.cookies["user_id"]
 
   if (urlDatabase[enteredShortURL].userID === loggedUser) {
-    console.log("yes thi is the owner");
+
     let templateVars = {
       shortURL: enteredShortURL,
       longURL: urlDatabase[enteredShortURL].longURL,
@@ -117,7 +121,7 @@ app.get("/urls/:shortURL", (req, res) => {
     res.render("urls_show", templateVars);
   
   } else { 
-    console.log("this is not the owner")
+
     let templateVars = {
       user: false
      };
@@ -162,7 +166,7 @@ app.post("/urls/:shortURL/update", (req, res) => {
   const loggedUser = req.cookies["user_id"]; 
   let shortURL = urlDatabase[req.params.shortURL]; //getting an object not value
   const longURL = req.body.longURL;
-  console.log("shortURL", shortURL);
+  // console.log("shortURL", shortURL);
   shortURL.longURL = longURL;
 
   res.redirect(`/urls/${req.params.shortURL}`);
@@ -176,16 +180,19 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   const submittedEmail = req.body.email;
-  
+  const submittedPW = req.body.password;
+
   if (!findUser(submittedEmail)) {
     res.statusCode = 403;
     res.send("Sorry, that email does not have an associated account on TinyApp. Please try again.")
+
   } else if (findUser(submittedEmail)) { 
-    const submittedPW = req.body.password;
-    
-    if (!(submittedPW === findUser(submittedEmail).password)) {
+    const storedPW = findUser(submittedEmail).password;
+
+    if(!(bcrypt.compareSync(submittedPW, storedPW))) {
       res.statusCode = 403;
       res.send("Sorry, the password inputted is incorrect. Please try again.")
+   
     } else {
       const userID = findUser(submittedEmail).id;
       res.cookie("user_id", userID);
