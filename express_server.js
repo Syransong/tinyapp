@@ -134,7 +134,7 @@ app.get("/u/:shortURL", (req, res) => {
     res.statusCode = 400;
     res.send("Sorry, that URL does not exist. Please try again")
   } 
-  
+
   const longURL = urlDatabase[enteredShortURL].longURL;
   res.redirect(longURL);
 });
@@ -210,6 +210,11 @@ app.get("/register", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id]
   };
+  
+  if (req.session.user_id) {
+    res.redirect("/urls");
+  }
+
   res.render("register", templateVars);
 });
 
