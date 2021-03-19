@@ -106,7 +106,7 @@ app.get("/urls/:shortURL", (req, res) => {
     res.statusCode = 400;
     res.send("Sorry, that URL does not exist. Please try again")
   } 
-  
+
   if (urlDatabase[enteredShortURL].userID === loggedUser) {
 
     let templateVars = {
@@ -128,7 +128,14 @@ app.get("/urls/:shortURL", (req, res) => {
 
 // Redirects from short to long URL
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
+  const enteredShortURL = req.params.shortURL;
+
+  if (!doesShortURLExist(enteredShortURL, urlDatabase)) {
+    res.statusCode = 400;
+    res.send("Sorry, that URL does not exist. Please try again")
+  } 
+  
+  const longURL = urlDatabase[enteredShortURL].longURL;
   res.redirect(longURL);
 });
 
