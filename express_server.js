@@ -6,6 +6,9 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const cookieSession = require("cookie-session");
 
+// Helper Functions
+const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
+
 // Middleware
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -20,6 +23,7 @@ app.set("view engine", "ejs");
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
 
 //Global Objects
 const urlDatabase = {
@@ -51,30 +55,6 @@ const users = {
   }
 };
 
-//Global helper functions
-const generateRandomString = function() {
-  let randoStr = Math.random().toString(36).substring(2, 8);
-  return randoStr;
-};
-
-const getUserByEmail = function(email, database) {
-  for (const userid in database) {
-    if (database[userid].email === email) {
-      return database[userid];
-    }
-  }
-}
-
-const urlsForUser = function(id, obj) {
-  let urls = {};
-
-  for (let key in obj) {
-    if (obj[key].userID === id) {
-      urls[key] = obj[key].longURL;
-    }
-  }
-  return urls;
-};
 
 // Routes
 
