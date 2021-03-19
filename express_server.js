@@ -67,19 +67,18 @@ app.get("/", (req, res) => {
   } else {
     res.redirect("/urls");
   }
-  // res.send("Hello!");
 });
 
 // URLs Page
 app.get("/urls", (req, res) => {
   const userID = req.session.user_id;
   const urlsOfUser = urlsForUser(userID, urlDatabase);
-  console.log(urlsOfUser);
+
   const templateVars = {
     urls: urlsOfUser,
     user: users[userID]
   };
-  console.log(templateVars);
+
   res.render("urls_index", templateVars);
 });
 
@@ -100,33 +99,26 @@ app.get("/urls/new", (req, res) => {
 
 // Displays page of specific ShortURL
 app.get("/urls/:shortURL", (req, res) => {
-  console.log("hello");
   const enteredShortURL = req.params.shortURL;
-  console.log("enteredshortURL", enteredShortURL);
   const loggedUser = req.session.user_id;
-  console.log("loggeduser", loggedUser);
 
   if (!doesShortURLExist(enteredShortURL, urlDatabase)) {
-    // res.statusCode = 400;
-    res.status(400).send("Sorry, that URL does not exist. Please try again")
+    res.status(400).send("Sorry, that URL does not exist. Please try again");
   } 
 
   if (urlDatabase[enteredShortURL].userID === loggedUser) {
-
     let templateVars = {
       shortURL: enteredShortURL,
       longURL: urlDatabase[enteredShortURL].longURL,
       user: users[loggedUser]
     };
-    console.log("templateVars", templateVars);
     res.render("urls_show", templateVars);
   
   } else {
-
     let templateVars = {
       user: false
     };
-    
+
     res.render("urls_show", templateVars);
   }
 });
@@ -136,12 +128,11 @@ app.get("/u/:shortURL", (req, res) => {
   const enteredShortURL = req.params.shortURL;
 
   if (!doesShortURLExist(enteredShortURL, urlDatabase)) {
-    res.statusCode = 400;
-    res.send("Sorry, that URL does not exist. Please try again")
+    res.status(400).send("Sorry, that URL does not exist. Please try again");
+
   } else {
     const longURL = urlDatabase[enteredShortURL].longURL;
     res.redirect(longURL);
-
   }
 });
 
@@ -178,8 +169,8 @@ app.post("/urls/:shortURL/update", (req, res) => { //NEED TO FIX THIS FCN
   const newLongURL = req.body.longURL;
 
   if (!loggedUser) {
-    res.statusCode = 400;
-    res.send("Sorry, you do not have the permissions to edit this URL.")
+    res.status(400).send("Sorry, you do not have the permissions to edit this URL.");
+
   } else {
     storedShortURL.longURL = newLongURL;
     console.log("urlDatabase", urlDatabase)
@@ -203,16 +194,14 @@ app.post("/login", (req, res) => {
   const submittedEmail = req.body.email;
   
   if (!getUserObjByEmail(submittedEmail, users)) {
-    res.statusCode = 403;
-    res.send("Sorry, that email does not have an associated account on TinyApp. Please try again.");
+    res.status(403).send("Sorry, that email does not have an associated account on TinyApp. Please try again.");
     
   } else if (getUserObjByEmail(submittedEmail, users)) {
     const submittedPW = req.body.password;
     const storedPW = getUserObjByEmail(submittedEmail, users).password;
 
     if (!(bcrypt.compareSync(submittedPW, storedPW))) {
-      res.statusCode = 403;
-      res.send("Sorry, the password inputted is incorrect. Please try again.");
+      res.status(403).send("Sorry, the password inputted is incorrect. Please try again.");
    
     } else {
       const userID = getUserByEmail(submittedEmail, users);
