@@ -24,7 +24,7 @@ const urlDatabase = {
   },
   "9sm5xK": {
     longURL: "http://www.google.com",
-    userID: "kirby"
+    userID: "coolGuy88"
   }
 };
 
@@ -120,31 +120,9 @@ app.get("/urls/:shortURL", (req, res) => {
     let templateVars = {
       user: false
      };
+
     res.render("urls_show", templateVars);
   }
-
-  // if (urlDatabase[enteredShortURL].userID === loggedUser) {
-  //   let templateVars = {
-  //     shortURL: enteredShortURL,
-  //     longURL: urlDatabase[enteredShortURL].longURL,
-  //     user: users[loggedUser]
-  //   }
-  //   console.log("yes owner owns this url");
-  //   res.render("urls_show", templateVars);
-
-  // } else {
-    
-  //   let templateVars = {
-  //     user: null
-  //   }
-  //   res.render("urls_show", templateVars);
-  // }
-  // let templateVars = {
-  //   shortURL: enteredShortURL,
-  //   longURL: urlDatabase[enteredShortURL].longURL,
-  //   user: users[loggedUser]
-  // }
-  // res.render("urls_show", templateVars);
 });
 
 // Creating new short URL
