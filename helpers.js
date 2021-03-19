@@ -11,6 +11,14 @@ const getUserByEmail = function(email, database) {
   }
 }
 
+const getUserObjByEmail = function(email, database) {
+  for (const userid in database) {
+    if (database[userid].email === email) {
+      return database[userid];
+    }
+  }
+}
+
 const urlsForUser = function(id, obj) {
   let urls = {};
 
@@ -22,4 +30,4 @@ const urlsForUser = function(id, obj) {
   return urls;
 };
 
-module.exports = { generateRandomString, getUserByEmail, urlsForUser};
+module.exports = { generateRandomString, getUserByEmail, urlsForUser, getUserObjByEmail};

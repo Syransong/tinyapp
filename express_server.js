@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 const cookieSession = require("cookie-session");
 
 // Helper Functions
-const { generateRandomString, getUserByEmail, urlsForUser } = require("./helpers");
+const { generateRandomString, getUserByEmail,  getUserObjByEmail, urlsForUser } = require("./helpers");
 
 // Middleware
 app.use(bodyParser.urlencoded({extended: true}));
@@ -164,21 +164,21 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   const submittedEmail = req.body.email;
-  const submittedPW = req.body.password;
-
-  if (!getUserByEmail(submittedEmail, users)) {
+  
+  if (!getUserObjByEmail(submittedEmail, users)) {
     res.statusCode = 403;
     res.send("Sorry, that email does not have an associated account on TinyApp. Please try again.")
-
-  } else if (getUserByEmail(submittedEmail, users)) { 
-    const storedPW = getUserByEmail(submittedEmail, users).password;
+    
+  } else if (getUserObjByEmail(submittedEmail, users)) { 
+    const submittedPW = req.body.password;
+    const storedPW = getUserObjByEmail(submittedEmail, users).password;
 
     if(!(bcrypt.compareSync(submittedPW, storedPW))) {
       res.statusCode = 403;
       res.send("Sorry, the password inputted is incorrect. Please try again.")
    
     } else {
-      const userID = getUserByEmail(submittedEmail, users).id;
+      const userID = getUserObjByEmail(submittedEmail, users).id;
       req.session.user_id = (userID);
       res.redirect("/urls");
     }
@@ -226,3 +226,4 @@ app.post("/register", (req, res) => {
     res.redirect("/urls");
   }
 });
+
