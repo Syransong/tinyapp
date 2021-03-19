@@ -178,6 +178,11 @@ app.post("/urls/:shortURL/update", (req, res) => { //NEED TO FIX THIS FCN
 // User Login Page
 app.get("/login", (req, res) => {
   const templateVars = { user: null };
+
+  if (req.session.user_id) {
+    res.redirect("/urls");
+  }
+  
   res.render("login", templateVars);
 });
 
@@ -210,7 +215,7 @@ app.get("/register", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id]
   };
-  
+
   if (req.session.user_id) {
     res.redirect("/urls");
   }
