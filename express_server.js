@@ -65,16 +65,27 @@ const findUser = function(email) {
   }
 };
 
-const urlsForUser = function(user) {
-  let urls = {} ;
+// const urlsForUser = function(user) {
+//   let urls = {} ;
 
-  for (let key in urlDatabase) {
-    if (urlDatabase[key].userID === user) {
-      urls[key] = urlDatabase[key].longURL;
+//   for (let key in urlDatabase) {
+//     if (urlDatabase[key].userID === user) {
+//       urls[key] = urlDatabase[key].longURL;
+//     }
+//   }
+//   return urls;
+// }
+
+const urlsForUser = function(id, obj) {
+  let urls = {};
+
+  for (let key in obj) {
+    if (obj[key].userID === id) {
+      urls[key] = obj[key].longURL;
     }
   }
   return urls;
-}
+};
 
 // Routes
 
@@ -85,7 +96,7 @@ app.get("/urls.json", (req, res) => {
 // URLs Page
 app.get("/urls", (req, res) => {
   const userID = req.session.user_id;
-  const urlsOfUser = urlsForUser(userID);
+  const urlsOfUser = urlsForUser(userID, urlDatabase);
   
   const templateVars = {
     urls: urlsOfUser,
@@ -156,8 +167,8 @@ app.get("/u/:shortURL", (req, res) => {
 // Deletes short URL
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
-  const userID = req.cookies["user_id"];
-  const urlsOfUser = urlsForUser(userID);
+  const userID = req.session.user_id;
+  const urlsOfUser = urlsForUser(userID, urlDatabase);
 
   if (Object.keys(urlsOfUser).includes(shortURL)) {
     delete urlDatabase[shortURL];
@@ -199,7 +210,7 @@ app.post("/login", (req, res) => {
    
     } else {
       const userID = findUser(submittedEmail).id;
-      res.session.user_id = (userID);
+      req.session.user_id = (userID);
       res.redirect("/urls");
     }
   }
