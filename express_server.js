@@ -13,9 +13,9 @@ const { generateRandomString, getUserByEmail,  getUserObjByEmail, urlsForUser } 
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(cookieSession({
-  name: "session", 
+  name: "session",
   keys: ["The future", "is bleak"]
-}))
+}));
 
 // Server Related
 app.set("view engine", "ejs");
@@ -49,7 +49,7 @@ const users = {
     password: "$2b$10$3NK2T99C0zJFHVuDrLtgeO.5fyVWjkb1HGvhSHRBbZ9hJ/UvYVgDK" //"kirby"
   },
   "m72z90": {
-    id: "m72z90", 
+    id: "m72z90",
     email: "b@b.com",
     password: "$2b$10$nc63emRo/f/3HZ/ArNBe5.b2OkodIsgoLhxhgbka8I.on78/lxC12" //plain-text PW: 12345
   }
@@ -112,14 +112,14 @@ app.get("/urls/:shortURL", (req, res) => {
       shortURL: enteredShortURL,
       longURL: urlDatabase[enteredShortURL].longURL,
       user: users[loggedUser]
-    }
+    };
     res.render("urls_show", templateVars);
   
-  } else { 
+  } else {
 
     let templateVars = {
       user: false
-     };
+    };
 
     res.render("urls_show", templateVars);
   }
@@ -134,7 +134,7 @@ app.post("/urls", (req, res) => {
   urlDatabase[shortURL] = {
     longURL: req.body.longURL,
     userID: userID
-  }
+  };
   res.redirect(`/urls/${shortURL}`);
 });
 
@@ -157,8 +157,8 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 // Updates the shortURL
-app.post("/urls/:shortURL/update", (req, res) => {
-  const loggedUser = req.session_id; 
+app.post("/urls/:shortURL/update", (req, res) => { //NEED TO FIX THIS FCN
+  const loggedUser = req.session_id;
   let shortURL = urlDatabase[req.params.shortURL]; //getting an object not value
   const longURL = req.body.longURL;
   // console.log("shortURL", shortURL);
@@ -178,15 +178,15 @@ app.post("/login", (req, res) => {
   
   if (!getUserObjByEmail(submittedEmail, users)) {
     res.statusCode = 403;
-    res.send("Sorry, that email does not have an associated account on TinyApp. Please try again.")
+    res.send("Sorry, that email does not have an associated account on TinyApp. Please try again.");
     
-  } else if (getUserObjByEmail(submittedEmail, users)) { 
+  } else if (getUserObjByEmail(submittedEmail, users)) {
     const submittedPW = req.body.password;
     const storedPW = getUserObjByEmail(submittedEmail, users).password;
 
-    if(!(bcrypt.compareSync(submittedPW, storedPW))) {
+    if (!(bcrypt.compareSync(submittedPW, storedPW))) {
       res.statusCode = 403;
-      res.send("Sorry, the password inputted is incorrect. Please try again.")
+      res.send("Sorry, the password inputted is incorrect. Please try again.");
    
     } else {
       const userID = getUserByEmail(submittedEmail, users);
@@ -198,12 +198,12 @@ app.post("/login", (req, res) => {
 
 // User Logout
 app.post("/logout", (req, res) => {
-  req.session= null;
+  req.session = null;
 
   res.redirect("/urls");
 });
 
-// User Registration 
+// User Registration
 app.get("/register", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id]
@@ -240,10 +240,10 @@ app.post("/register", (req, res) => {
 
 // Catch all Functions
 
-app.get("/urls/*", (req, res) => { 
+app.get("/urls/*", (req, res) => {
   res.redirect("/login");
 });
 
-app.get("/*", (req, res) => { 
+app.get("/*", (req, res) => {
   res.redirect("/login");
 });
