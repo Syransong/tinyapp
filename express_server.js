@@ -101,11 +101,27 @@ app.get("/urls/new", (req, res) => {
   }
 });
 
-// Gets the short URL
+// Displays page of specific ShortURL
 app.get("/urls/:shortURL", (req, res) => {
   const enteredShortURL = req.params.shortURL;
-  console.log(enteredShortURL);
-  const user = req.cookies["user_id"]; 
+  const loggedUser = req.cookies["user_id"]
+
+  if (urlDatabase[enteredShortURL].userID === loggedUser) {
+    console.log("yes thi is the owner");
+    let templateVars = {
+      shortURL: enteredShortURL,
+      longURL: urlDatabase[enteredShortURL].longURL,
+      user: users[loggedUser]
+    }
+    res.render("urls_show", templateVars);
+  
+  } else { 
+    console.log("this is not the owner")
+    let templateVars = {
+      user: false
+     };
+    res.render("urls_show", templateVars);
+  }
 
   // if (urlDatabase[enteredShortURL].userID === loggedUser) {
   //   let templateVars = {
@@ -113,14 +129,22 @@ app.get("/urls/:shortURL", (req, res) => {
   //     longURL: urlDatabase[enteredShortURL].longURL,
   //     user: users[loggedUser]
   //   }
+  //   console.log("yes owner owns this url");
   //   res.render("urls_show", templateVars);
-  // };
-  let templateVars = {
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL].longURL,
-    user: users[req.cookies["user_id"]]
-  };
-  res.render("urls_show", templateVars);
+
+  // } else {
+    
+  //   let templateVars = {
+  //     user: null
+  //   }
+  //   res.render("urls_show", templateVars);
+  // }
+  // let templateVars = {
+  //   shortURL: enteredShortURL,
+  //   longURL: urlDatabase[enteredShortURL].longURL,
+  //   user: users[loggedUser]
+  // }
+  // res.render("urls_show", templateVars);
 });
 
 // Creating new short URL
@@ -157,13 +181,12 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 // Updates the shortURL
 app.post("/urls/:shortURL/update", (req, res) => {
   const loggedUser = req.cookies["user_id"]; 
-  let shortURL = urlDatabase[req.body.shortURL];
-  const newURL = req.body.newURL;
-  
-  // if (urlDatabase[shortURL].userID === loggedUser) {
-    shortURL = newURL;
+  let shortURL = urlDatabase[req.params.shortURL]; //getting an object not value
+  const longURL = req.body.longURL;
+  console.log("shortURL", shortURL);
+  shortURL.longURL = longURL;
 
-  res.redirect(`/urls/${shortURL}`);
+  res.redirect(`/urls/${req.params.shortURL}`);
 });
 
 // User Login
