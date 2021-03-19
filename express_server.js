@@ -58,13 +58,14 @@ const generateRandomString = function() {
 };
 
 
-const findUser = function(email) {
-  for (const userid in users) {
-    if (users[userid].email === email) {
-      return users[userid];
-    }
-  }
-};
+// const findUser = function(email) {
+//   for (const userid in users) {
+//     if (users[userid].email === email) {
+//       return users[userid];
+//     }
+//   }
+// };
+// getUserByEmail(submittedEmail, users)
 
 const getUserByEmail = function(email, database) {
   for (const userid in database) {
@@ -206,19 +207,19 @@ app.post("/login", (req, res) => {
   const submittedEmail = req.body.email;
   const submittedPW = req.body.password;
 
-  if (!findUser(submittedEmail)) {
+  if (!getUserByEmail(submittedEmail, users)) {
     res.statusCode = 403;
     res.send("Sorry, that email does not have an associated account on TinyApp. Please try again.")
 
-  } else if (findUser(submittedEmail)) { 
-    const storedPW = findUser(submittedEmail).password;
+  } else if (getUserByEmail(submittedEmail, users)) { 
+    const storedPW = getUserByEmail(submittedEmail, users).password;
 
     if(!(bcrypt.compareSync(submittedPW, storedPW))) {
       res.statusCode = 403;
       res.send("Sorry, the password inputted is incorrect. Please try again.")
    
     } else {
-      const userID = findUser(submittedEmail).id;
+      const userID = getUserByEmail(submittedEmail, users).id;
       req.session.user_id = (userID);
       res.redirect("/urls");
     }
@@ -248,7 +249,7 @@ app.post("/register", (req, res) => {
     res.statusCode = 400;
     res.send("Please enter your email and/or password");
 
-  } else if (findUser(submittedEmail)) {
+  } else if (getUserByEmail(submittedEmail, users)) {
     res.statusCode = 400;
     res.send("Submitted email already in use.");
 
