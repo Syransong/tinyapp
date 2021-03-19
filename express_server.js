@@ -13,7 +13,7 @@ const { generateRandomString, getUserByEmail,  getUserObjByEmail, urlsForUser, d
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(cookieSession({
-  name: "session",
+  name: "cookieSession",
   keys: ["The future", "is bleak"]
 }));
 
@@ -67,18 +67,19 @@ app.get("/", (req, res) => {
   } else {
     res.redirect("/urls");
   }
+  // res.send("Hello!");
 });
 
 // URLs Page
 app.get("/urls", (req, res) => {
   const userID = req.session.user_id;
   const urlsOfUser = urlsForUser(userID, urlDatabase);
-  
+  console.log(urlsOfUser);
   const templateVars = {
     urls: urlsOfUser,
     user: users[userID]
   };
-
+  console.log(templateVars);
   res.render("urls_index", templateVars);
 });
 
@@ -99,12 +100,15 @@ app.get("/urls/new", (req, res) => {
 
 // Displays page of specific ShortURL
 app.get("/urls/:shortURL", (req, res) => {
+  console.log("hello");
   const enteredShortURL = req.params.shortURL;
+  console.log("enteredshortURL", enteredShortURL);
   const loggedUser = req.session.user_id;
+  console.log("loggeduser", loggedUser);
 
   if (!doesShortURLExist(enteredShortURL, urlDatabase)) {
-    res.statusCode = 400;
-    res.send("Sorry, that URL does not exist. Please try again")
+    // res.statusCode = 400;
+    res.status(400).send("Sorry, that URL does not exist. Please try again")
   } 
 
   if (urlDatabase[enteredShortURL].userID === loggedUser) {
@@ -114,6 +118,7 @@ app.get("/urls/:shortURL", (req, res) => {
       longURL: urlDatabase[enteredShortURL].longURL,
       user: users[loggedUser]
     };
+    console.log("templateVars", templateVars);
     res.render("urls_show", templateVars);
   
   } else {
@@ -121,7 +126,7 @@ app.get("/urls/:shortURL", (req, res) => {
     let templateVars = {
       user: false
     };
-
+    
     res.render("urls_show", templateVars);
   }
 });
@@ -133,10 +138,11 @@ app.get("/u/:shortURL", (req, res) => {
   if (!doesShortURLExist(enteredShortURL, urlDatabase)) {
     res.statusCode = 400;
     res.send("Sorry, that URL does not exist. Please try again")
-  } 
+  } else {
+    const longURL = urlDatabase[enteredShortURL].longURL;
+    res.redirect(longURL);
 
-  const longURL = urlDatabase[enteredShortURL].longURL;
-  res.redirect(longURL);
+  }
 });
 
 // Creating new short URL
@@ -166,13 +172,19 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // Updates the shortURL
 app.post("/urls/:shortURL/update", (req, res) => { //NEED TO FIX THIS FCN
-  const loggedUser = req.session_id;
-  let shortURL = urlDatabase[req.params.shortURL]; //getting an object not value
-  const longURL = req.body.longURL;
-  // console.log("shortURL", shortURL);
-  shortURL.longURL = longURL;
+  const loggedUser = req.session.user_id;
+  const shortURL = req.params.shortURL;
+  const storedShortURL = urlDatabase[shortURL];
+  const newLongURL = req.body.longURL;
 
-  res.redirect(`/urls/${req.params.shortURL}`);
+  if (!loggedUser) {
+    res.statusCode = 400;
+    res.send("Sorry, you do not have the permissions to edit this URL.")
+  } else {
+    storedShortURL.longURL = newLongURL;
+    console.log("urlDatabase", urlDatabase)
+    res.redirect("/urls");
+  }
 });
 
 // User Login Page
@@ -182,7 +194,7 @@ app.get("/login", (req, res) => {
   if (req.session.user_id) {
     res.redirect("/urls");
   }
-  
+
   res.render("login", templateVars);
 });
 
@@ -218,9 +230,9 @@ app.get("/register", (req, res) => {
 
   if (req.session.user_id) {
     res.redirect("/urls");
+  } else {
+    res.render("register", templateVars);
   }
-
-  res.render("register", templateVars);
 });
 
 // User Registration Request
