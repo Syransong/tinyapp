@@ -38,4 +38,4 @@ const doesShortURLExist = function(shortURL, obj) {
   }
 };
 
-module.exports = { generateRandomString, getUserByEmail, urlsForUser, getUserObjByEmail};
+module.exports = { generateRandomString, getUserByEmail, urlsForUser, getUserObjByEmail, doesShortURLExist };

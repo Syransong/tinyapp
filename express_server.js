@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 const cookieSession = require("cookie-session");
 
 // Helper Functions
-const { generateRandomString, getUserByEmail,  getUserObjByEmail, urlsForUser } = require("./helpers");
+const { generateRandomString, getUserByEmail,  getUserObjByEmail, urlsForUser, doesShortURLExist } = require("./helpers");
 
 // Middleware
 app.use(bodyParser.urlencoded({extended: true}));
@@ -102,6 +102,11 @@ app.get("/urls/:shortURL", (req, res) => {
   const enteredShortURL = req.params.shortURL;
   const loggedUser = req.session.user_id;
 
+  if (!doesShortURLExist(enteredShortURL, urlDatabase)) {
+    res.statusCode = 400;
+    res.send("Sorry, that URL does not exist. Please try again")
+  } 
+  
   if (urlDatabase[enteredShortURL].userID === loggedUser) {
 
     let templateVars = {
@@ -192,7 +197,6 @@ app.post("/login", (req, res) => {
     }
   }
 });
-
 
 // User Registration Page
 app.get("/register", (req, res) => {
