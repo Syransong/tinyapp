@@ -4,6 +4,7 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const bcrypt = require("bcrypt");
 
 // Middleware
 app.use(bodyParser.urlencoded({extended: true}));
@@ -222,14 +223,15 @@ app.post("/register", (req, res) => {
 
   } else {
     const userID = generateRandomString();
+    const hashedPW = bcrypt.hashSync(submittedPW, 10);
 
     users[userID] = {
       id: userID,
       email: submittedEmail,
-      password: submittedPW
+      password: hashedPW
     };
+    
     res.cookie("user_id", userID);
     res.redirect("/urls");
   }
 });
-
