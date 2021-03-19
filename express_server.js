@@ -58,6 +58,17 @@ const users = {
 
 // Routes
 
+app.get("/", (req, res) => {
+  const userID = req.session.user_id;
+
+  if (!userID) {
+    res.redirect("/login");
+
+  } else {
+    res.redirect("/urls");
+  }
+});
+
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
