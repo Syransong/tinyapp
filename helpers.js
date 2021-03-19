@@ -30,4 +30,12 @@ const urlsForUser = function(id, obj) {
   return urls;
 };
 
+const doesShortURLExist = function(shortURL, obj) {
+  if (Object.keys(obj).includes(shortURL)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 module.exports = { generateRandomString, getUserByEmail, urlsForUser, getUserObjByEmail};
