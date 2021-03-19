@@ -178,7 +178,7 @@ app.post("/login", (req, res) => {
       res.send("Sorry, the password inputted is incorrect. Please try again.")
    
     } else {
-      const userID = getUserObjByEmail(submittedEmail, users).id;
+      const userID = getUserByEmail(submittedEmail, users);
       req.session.user_id = (userID);
       res.redirect("/urls");
     }
@@ -222,8 +222,17 @@ app.post("/register", (req, res) => {
       password: hashedPW
     };
     
-    res.session.user_id = (userID);
+    req.session.user_id = (userID);
     res.redirect("/urls");
   }
 });
 
+// Catch all Functions
+
+app.get("/urls/*", (req, res) => { 
+  res.redirect("/login");
+});
+
+app.get("/*", (req, res) => { 
+  res.redirect("/login");
+});
