@@ -57,6 +57,7 @@ const generateRandomString = function() {
   return randoStr;
 };
 
+
 const findUser = function(email) {
   for (const userid in users) {
     if (users[userid].email === email) {
@@ -64,6 +65,14 @@ const findUser = function(email) {
     }
   }
 };
+
+const getUserByEmail = function(email, database) {
+  for (const userid in database) {
+    if (database[userid].email === email) {
+      return database[userid];
+    }
+  }
+}
 
 // const urlsForUser = function(user) {
 //   let urls = {} ;
