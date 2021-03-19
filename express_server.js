@@ -41,17 +41,17 @@ const users = {
   "coolGuy88": {
     id: "coolGuy88",
     email: "coolerthancool@cool.com",
-    password: "$2b$10$4X43WoUqK5PGAEJwfEf6QOugrus/uklO2ET6/09MzokWDIUE8ISh2" // plain-text cool"
+    password: "$2b$10$4X43WoUqK5PGAEJwfEf6QOugrus/uklO2ET6/09MzokWDIUE8ISh2" // plain-text: cool
   },
   "kirby": {
     id: "kirby",
     email: "kirbykurbs@dreamland.com",
-    password: "$2b$10$3NK2T99C0zJFHVuDrLtgeO.5fyVWjkb1HGvhSHRBbZ9hJ/UvYVgDK" //"kirby"
+    password: "$2b$10$3NK2T99C0zJFHVuDrLtgeO.5fyVWjkb1HGvhSHRBbZ9hJ/UvYVgDK" // plain-text: kirby
   },
   "m72z90": {
     id: "m72z90",
     email: "b@b.com",
-    password: "$2b$10$nc63emRo/f/3HZ/ArNBe5.b2OkodIsgoLhxhgbka8I.on78/lxC12" //plain-text PW: 12345
+    password: "$2b$10$nc63emRo/f/3HZ/ArNBe5.b2OkodIsgoLhxhgbka8I.on78/lxC12" //plain-text: 12345
   }
 };
 
@@ -82,7 +82,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-// Create new short URL
+// Displays new short URL creation form
 app.get("/urls/new", (req, res) => {
   const userID = req.session.user_id;
 
@@ -121,6 +121,12 @@ app.get("/urls/:shortURL", (req, res) => {
   }
 });
 
+// Redirects from short to long URL
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL].longURL;
+  res.redirect(longURL);
+});
+
 // Creating new short URL
 app.post("/urls", (req, res) => {
   res.statusCode = 200;
@@ -132,12 +138,6 @@ app.post("/urls", (req, res) => {
     userID: userID
   };
   res.redirect(`/urls/${shortURL}`);
-});
-
-// Redirects from short to long URL
-app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
-  res.redirect(longURL);
 });
 
 // Deletes short URL
@@ -163,12 +163,13 @@ app.post("/urls/:shortURL/update", (req, res) => { //NEED TO FIX THIS FCN
   res.redirect(`/urls/${req.params.shortURL}`);
 });
 
-// User Login
+// User Login Page
 app.get("/login", (req, res) => {
   const templateVars = { user: null };
   res.render("login", templateVars);
 });
 
+// User Login Request
 app.post("/login", (req, res) => {
   const submittedEmail = req.body.email;
   
@@ -192,14 +193,8 @@ app.post("/login", (req, res) => {
   }
 });
 
-// User Logout
-app.post("/logout", (req, res) => {
-  req.session = null;
 
-  res.redirect("/urls");
-});
-
-// User Registration
+// User Registration Page
 app.get("/register", (req, res) => {
   let templateVars = {
     user: users[req.session.user_id]
@@ -207,6 +202,7 @@ app.get("/register", (req, res) => {
   res.render("register", templateVars);
 });
 
+// User Registration Request
 app.post("/register", (req, res) => {
   const submittedEmail = req.body.email;
   const submittedPW = req.body.password;
@@ -232,6 +228,13 @@ app.post("/register", (req, res) => {
     req.session.user_id = (userID);
     res.redirect("/urls");
   }
+});
+
+// User Logout
+app.post("/logout", (req, res) => {
+  req.session = null;
+
+  res.redirect("/urls");
 });
 
 // Catch all Functions
