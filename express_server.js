@@ -104,7 +104,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
   if (!doesShortURLExist(enteredShortURL, urlDatabase)) {
     res.status(400).send("Sorry, that URL does not exist. Please try again");
-  } 
+  }
 
   if (urlDatabase[enteredShortURL].userID === loggedUser) {
     let templateVars = {

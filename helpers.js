@@ -9,7 +9,7 @@ const getUserByEmail = function(email, database) {
       return database[userid].id;
     }
   }
-}
+};
 
 const getUserObjByEmail = function(email, database) {
   for (const userid in database) {
@@ -17,7 +17,7 @@ const getUserObjByEmail = function(email, database) {
       return database[userid];
     }
   }
-}
+};
 
 const urlsForUser = function(id, obj) {
   let urls = {};
