@@ -173,7 +173,6 @@ app.post("/urls/:shortURL/update", (req, res) => { //NEED TO FIX THIS FCN
 
   } else {
     storedShortURL.longURL = newLongURL;
-    console.log("urlDatabase", urlDatabase)
     res.redirect("/urls");
   }
 });
