@@ -162,7 +162,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 // Updates the shortURL
-app.post("/urls/:shortURL/update", (req, res) => { //NEED TO FIX THIS FCN
+app.post("/urls/:shortURL/update", (req, res) => {
   const loggedUser = req.session.user_id;
   const shortURL = req.params.shortURL;
   const storedShortURL = urlDatabase[shortURL];
